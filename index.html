@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Project Library</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1>Library Management</h1>
+      <button id="showDialog">Add Book</button>
+
+      <!-- Dialog for the form -->
+      <dialog id="favDialog">
+        <form method="dialog">
+          <h2>Add Book</h2>
+          <div class="form-container">
+            <div class="form-group">
+              <label for="title">Title</label>
+              <input
+                id="title"
+                type="text"
+                placeholder="Enter book title"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="author">Author</label>
+              <input
+                id="author"
+                type="text"
+                placeholder="Enter author name"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="num_page">Number of Pages</label>
+              <input
+                id="num_page"
+                type="number"
+                placeholder="Enter number of pages"
+                required
+              />
+            </div>
+
+            <fieldset>
+              <legend>Select a Status</legend>
+              <div>
+                <input
+                  type="radio"
+                  id="currently"
+                  name="status"
+                  value="currently reading"
+                  required
+                />
+                <label for="currently">Currently Reading</label>
+              </div>
+              <div>
+                <input type="radio" id="unread" name="status" value="unread" />
+                <label for="unread">Unread</label>
+              </div>
+              <div>
+                <input type="radio" id="read" name="status" value="read" />
+                <label for="read">Read</label>
+              </div>
+            </fieldset>
+
+            <button id="confirmBtn">Add Book</button>
+            <button type="button" id="cancelBtn">Cancel</button>
+          </div>
+        </form>
+      </dialog>
+    </div>
+    <div id="resultat" class="result"></div>
+    <script>
+      const myLibrary = [];
+      const showButton = document.getElementById("showDialog");
+      const favDialog = document.getElementById("favDialog");
+      const confirmBtn = favDialog.querySelector("#confirmBtn");
+      const cancelBtn = document.getElementById("cancelBtn");
+
+      // "Show the dialog" button opens the <dialog> modally
+      showButton.addEventListener("click", () => {
+        favDialog.showModal();
+      });
+
+      // Prevent the "confirm" button from submitting the form
+      confirmBtn.addEventListener("click", (event) => {
+        event.preventDefault(); // Prevent default form submission
+
+        const title = document.getElementById("title").value;
+        const author = document.getElementById("author").value;
+        const num_page = document.getElementById("num_page").value;
+        const radios = document.getElementsByName("status");
+        let selectedValue;
+
+        for (const radio of radios) {
+          if (radio.checked) {
+            selectedValue = radio.value;
+            break;
+          }
+        }
+
+        // Create the book object
+        let book = {
+          title: title,
+          author: author,
+          num_page: num_page,
+          selectedValue: selectedValue,
+        };
+
+        myLibrary.push(book); // Add the book to the library
+
+        // Create a card to display the book details
+        const card = document.createElement("div");
+        card.classList.add("book-card");
+
+        const titre = document.createElement("p");
+        titre.innerHTML = "Title: " + book.title;
+
+        const auteur = document.createElement("p");
+        auteur.innerHTML = "Author: " + book.author;
+
+        const nombre = document.createElement("p");
+        nombre.innerHTML = "Number of Pages: " + book.num_page;
+
+        const choice = document.createElement("p");
+        choice.innerHTML = "Status: " + book.selectedValue;
+
+        card.appendChild(titre);
+        card.appendChild(auteur);
+        card.appendChild(nombre);
+        card.appendChild(choice);
+
+        document.getElementById("resultat").appendChild(card); // Add the card to the result container
+
+        // Clear input fields after adding
+        document.getElementById("title").value = "";
+        document.getElementById("author").value = "";
+        document.getElementById("num_page").value = "";
+        radios.forEach((radio) => (radio.checked = false));
+
+        // Close the dialog after adding the book
+        favDialog.close();
+      });
+
+      // "Cancel" button closes the dialog without submitting
+      cancelBtn.addEventListener("click", () => {
+        favDialog.close(); // Close the dialog
+      });
+    </script>
+  </body>
+</html>
